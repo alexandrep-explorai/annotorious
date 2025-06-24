@@ -4,7 +4,7 @@
   import OpenSeadragon from 'openseadragon';
   import type { Annotation, DrawingStyleExpression, StoreChangeEvent, Update } from '@annotorious/core';
   import { isImageAnnotation, ShapeType } from '@annotorious/annotorious';
-  import type { Filter, ImageAnnotation, ImageAnnotatorState, Line, MultiPolygon, Polygon } from '@annotorious/annotorious';
+  import type { Filter, ImageAnnotation, ImageAnnotatorState, MultiPolygon, Polygon } from '@annotorious/annotorious';
   import type { PixiLayerClickEvent } from './PixiLayerClickEvent';
   import { createStage } from './stageRenderer';
 

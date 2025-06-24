@@ -90,7 +90,7 @@
     pointer-events: none;
   }
 
-  :global(.a9s-osd-selectionlayer :is(rect, path, polygon, ellipse, line)) {
+  :global(.a9s-osd-selectionlayer :is(rect, path, polygon, ellipse, polyline)) {
     fill: rgba(49, 130, 237, 0.25);
     stroke: #3182ed;
     stroke-width: 1.5px;

@@ -11,23 +11,16 @@
   $: computedStyle = computeStyle(annotation, style);
 
   const { points } = geom as LineGeometry;
-  const [[x1, y1], [x2, y2]] = points;
 </script>
 
 <g class="a9s-annotation" data-id={annotation.id}>
-  <line
+  <polyline
     class="a9s-outer"
     style={computedStyle ? 'display:none;' : undefined}
-    x1={x1}
-    y1={y1}
-    x2={x2}
-    y2={y2} />
+    points={points.map(xy => xy.join(',')).join(' ')} />
 
-  <line
+  <polyline
     class="a9s-inner"
     style={computedStyle}
-    x1={x1}
-    y1={y1}
-    x2={x2}
-    y2={y2} />
+    points={points.map(xy => xy.join(',')).join(' ')} />
 </g>

@@ -8,7 +8,7 @@ export interface Line extends Shape {
 
 export interface LineGeometry extends Geometry {
 
-  points: [[number, number], [number, number]]
+  points: Array<Array<number>>;
 
   bounds: Bounds;
   

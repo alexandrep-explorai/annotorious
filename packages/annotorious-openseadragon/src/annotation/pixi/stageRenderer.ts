@@ -86,9 +86,14 @@ const drawEllipse = drawShape((ellipse: Ellipse, g: PIXI.Graphics) => {
 });
 
 const drawLine = drawShape((line: Line, g: PIXI.Graphics) => {
-  const [[x1, y1], [x2, y2]] = line.geometry.points;
-  g.moveTo(x1, y1);
-  g.lineTo(x2, y2);
+  const { points } = line.geometry
+  const origin = points[0];
+  g.moveTo(origin[0], origin[1]);
+
+  for (let i = 1; i < points.length; i++) {
+    g.lineTo(points[i][0], points[i][1]);
+  }
+  
   g.closePath();
 });
 

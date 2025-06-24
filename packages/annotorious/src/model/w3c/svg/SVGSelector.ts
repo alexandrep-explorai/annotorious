@@ -22,7 +22,7 @@ export interface SVGSelector {
 }
 
 const parseSVGPolygon = (value: string): Polygon => {
-  const [_, __, str] = value.match(/(<polygon points=["|'])([^("|')]*)/) || [];
+  const [_, __, str] = value.match(/(<polygon points=["'])([^"']*)/) || [];
   const points = str.split(' ').map((p) => p.split(',').map(parseFloat));
 
   return {
@@ -64,23 +64,36 @@ const parseSVGEllipse = (value: string): Ellipse => {
 const parseSVGLine = (value: string): Line => {
   const doc = parseSVGXML(value);
 
-  const x1 = parseFloat(doc.getAttribute("x1")!);
-  const x2 = parseFloat(doc.getAttribute("x2")!);
-  const y1 = parseFloat(doc.getAttribute("y1")!);
-  const y2 = parseFloat(doc.getAttribute("y2")!);
-
-  const bounds = {
-    minX: Math.min(x1, x2),
-    minY: Math.min(y1, y2),
-    maxX: Math.max(x1, x2),
-    maxY: Math.max(y1, y2),
-  };
+  const points = [
+    [
+      parseFloat(doc.getAttribute("x1")!),
+      parseFloat(doc.getAttribute("y1")!)
+    ],
+    [
+      parseFloat(doc.getAttribute("x2")!),
+      parseFloat(doc.getAttribute("y2")!)
+    ],
+  ];
 
   return {
     type: ShapeType.LINE,
     geometry: {
-      points: [[x1, y1], [x2, y2]],
-      bounds,
+      points,
+      bounds: boundsFromPoints(points as [number, number][]),
+    },
+  };
+}
+
+
+const parseSVGPolyline = (value: string): Line => {
+  const doc = parseSVGXML(value);
+  const points = doc.getAttribute("points")!.split(' ').map((p) => p.split(',').map(parseFloat));
+
+  return {
+    type: ShapeType.LINE,
+    geometry: {
+      points,
+      bounds: boundsFromPoints(points as [number, number][]),
     },
   };
 }
@@ -127,6 +140,8 @@ export const parseSVGSelector = <T extends Shape>(valueOrSelector: SVGSelector |
     return parseSVGEllipse(value) as unknown as T;
   else if (value.includes("<line "))
     return parseSVGLine(value) as unknown as T;
+  else if (value.includes("<polyline "))
+    return parseSVGPolyline(value) as unknown as T;
   else 
     throw 'Unsupported SVG shape: ' + value;
 }
@@ -160,8 +175,8 @@ export const serializeSVGSelector = (shape: Shape): SVGSelector => {
     }
     case ShapeType.LINE: {
       const geom = shape.geometry as LineGeometry;
-      const [[x1, y1], [x2, y2]] = geom.points;
-      value = `<svg><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" /></svg>`;
+      const { points }= geom;
+      value = `<svg><polyline points="${points.map((xy) => xy.join(',')).join(' ')}" /></svg>`;
       break;
     }
   }
